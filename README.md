@@ -39,7 +39,7 @@ The system includes secure authentication, email verification, and a full-featur
 - 🎨 Tailwind CSS for styling
 - 🧩 shadcn/ui for reusable components
 - 🔔 react-hot-toast for notifications
-- 🔐 Clerk for login/authentication
+- 🔐 Next Auth for login/authentication
 - 🧪 Jest for frontend testing
 
 ---
@@ -63,10 +63,11 @@ git clone https://github.com/abdelrhman-arfat/Hotel-project.git
 
 ```bash
 
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3000kapi 
-AUTH_SECRET="..
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3004/api
+AUTH_SECRET= ..
 AUTH_GOOGLE_ID = ..
 AUTH_GOOGLE_SECRET = ...
+BACKEND_TOKEN= ...
 
 ```
 
@@ -87,10 +88,14 @@ DATABASE_URL=
 
 STRIPE_SECRET_KEY=
 
+CLIENT_URL=
+
 JWT_SECRET=
 JWT_EXPIRATION_TIME=
 REFRESH_EXPIRATION_TIME=
 REFRESH_SECRET=
+
+CLIENT_SCREE_JWT=
 
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
@@ -98,6 +103,8 @@ CLOUDINARY_API_SECRET=
 
 EMAIL_USER=
 EMAIL_PASS=
+
+PORT =
 
 NODE_ENV =
 ```
