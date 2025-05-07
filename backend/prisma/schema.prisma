@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id                Int       @id @default(autoincrement())
+  title             String
+  family_count      Int
+  description       String
+  price_per_day     Decimal   @db.Decimal(10, 2)
+  room_count        Int
+  main_image        String
+
+  reservations      Reservation[]
+  reviews           Review[]
+  room_images       RoomImage[]
+
+}
+
+
+enum UserRole {
+  manager
+  employee
+  customer
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique 
+  full_name  String
+  role       UserRole
+  image      String
+  password   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  reviews     Review[]
+  reservations Reservation[]
+}
+
+model Review {
+  id                Int     @id @default(autoincrement())
+  review_text       String
+  room_id           Int
+  user_id           Int
+  rate              Int 
+  createdAt DateTime @default(now())
+
+  room        Room     @relation(fields: [room_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+}
+
+model Reservation {
+  id          Int      @id @default(autoincrement())
+  room_id     Int
+  user_id     Int
+  total_price Decimal  @db.Decimal(10, 2)
+  start_date  DateTime
+  end_date    DateTime
+  days_count  Int
+  is_active   Boolean
+  room        Room     @relation(fields: [room_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+}
+
+model RoomImage {
+  id        Int      @id @default(autoincrement())
+  image     String
+  room_id   Int
+  createdAt DateTime @default(now())
+
+  room      Room     @relation(fields: [room_id], references: [id])
+}

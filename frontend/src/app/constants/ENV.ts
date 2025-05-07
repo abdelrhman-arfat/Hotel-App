@@ -1,0 +1,3 @@
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_TOKEN = process.env.BACKEND_TOKEN;
+export { BACKEND_URL ,BACKEND_TOKEN};
