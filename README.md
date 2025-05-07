@@ -48,8 +48,9 @@ The system includes secure authentication, email verification, and a full-featur
 
 ### 📂 Clone the repository:
 
-````bash
+```bash
 git clone https://github.com/abdelrhman-arfat/Hotel-project.git
+```
 
 # Frontend :
 
