@@ -23,7 +23,7 @@ const sendEmail = async (user, message: string, subject: string) => {
       <div style="font-family: 'Playfair Display', serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
         <header style="background: linear-gradient(135deg, #FFD700 0%, #ffbe0b 100%); color: white; padding: 30px; text-align: center; border-radius: 8px;">
           <img src="https://your-hotel-logo.com/logo.png" alt="Hotel Logo" style="width: 150px; margin-bottom: 15px;">
-          <h1 style="margin: 0; font-size: 28px; font-weight: 300;">Welcome to Luxury Stay, ${user.full_name.split(" ")[0]}</h1>
+          <h1 style="margin: 0; font-size: 28px; font-weight: 300;">Welcome to Luxury Stay, ${user?.full_name}</h1>
         </header>
         
         <main style="background-color: #ffffff; padding: 30px; margin: 20px 0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">

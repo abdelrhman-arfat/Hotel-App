@@ -2,11 +2,14 @@ import { Router } from "express";
 import {
   signInOrSignUp,
   deleteUserById,
+  refreshTokenUpdate,
+  logout,
 } from "../controller/auth.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import tryCatchHandler from "../utils/func/tryCatchHandler.js";
 import { body } from "express-validator";
-import { checkAuthorization } from "../middleware/checkAuthorization.js";
+import { handleValidationErrors } from "../utils/func/handleValidationErrors.js";
+import { backendTokenMiddleware } from "../middleware/backendToken.middleware.js";
 
 const router = Router();
 const LoginValidation = [
@@ -17,11 +20,17 @@ const LoginValidation = [
 router
   .post(
     "/login-signup",
+    tryCatchHandler(backendTokenMiddleware),
     LoginValidation,
-    tryCatchHandler(checkAuthorization),
+    tryCatchHandler(handleValidationErrors),
     tryCatchHandler(signInOrSignUp)
   )
-
+  .post("/logout", tryCatchHandler(authMiddleware), tryCatchHandler(logout))
+  .post(
+    "/refresh-token",
+    tryCatchHandler(authMiddleware),
+    tryCatchHandler(refreshTokenUpdate)
+  )
   .delete(
     "/delete-account",
     tryCatchHandler(authMiddleware),

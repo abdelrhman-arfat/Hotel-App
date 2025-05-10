@@ -58,9 +58,9 @@ git clone https://github.com/abdelrhman-arfat/Hotel-project.git
   cd frontend
   npm install
   npm run dev
-````
+```
 
-## .env frontend :
+## .env.local frontend :
 
 ```bash
 

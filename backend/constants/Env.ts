@@ -25,6 +25,8 @@ const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 
 const CLIENT_SCREE_JWT = process.env.CLIENT_SCREE_JWT;
 
+const SECRET = process.env.SECRET;
+
 const PORT = process.env.PORT;
 export {
   DATABASE_URL,
@@ -44,4 +46,5 @@ export {
   NODE_ENV,
   PORT,
   CLIENT_SCREE_JWT,
+  SECRET
 };

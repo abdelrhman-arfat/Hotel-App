@@ -5,17 +5,11 @@ import responseFailedHandler from "../utils/types/response/responseFailedHandler
 import { TRoles } from "../utils/types/Roles.js";
 import { ROLES } from "../constants/Roles.js";
 import returnSkip from "../utils/func/ReturnSkip.js";
-import { validationResult } from "express-validator";
 
 const prisma = new PrismaClient();
 
 const updateUserRole = async (req: Request, res: Response) => {
   const { userId, role } = req.body;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.status(400).json(responseFailedHandler(400, errors.array()[0].msg));
-    return;
-  }
 
   const user = await prisma.user.update({
     where: { id: userId },
@@ -32,8 +26,16 @@ const updateUserRole = async (req: Request, res: Response) => {
     .json(responseSuccessfulHandler("update user role success", 200, null));
 };
 const getAllUsers = async (req: Request, res: Response) => {
-  const { role, email, page = 1, limit = 50, orderBy } = req.query;
-  const skip = returnSkip(+page, +limit);
+  const {
+    role,
+    email,
+    orderBy,
+  }: {
+    role?: TRoles;
+    email?: string;
+    orderBy?: string;
+  } = req.query;
+  const [skip, limit] = returnSkip(req);
   let filter: {
     role?: string;
     email?: RegExp;
@@ -42,8 +44,8 @@ const getAllUsers = async (req: Request, res: Response) => {
   if (role && [ROLES.CUSTOMER, ROLES.MANAGER].includes(role as string)) {
     filter.role = role as string;
   }
-  if (email && email.toString().trim().length > 0) {
-    filter.email = new RegExp(email.toString().trim(), "i");
+  if (email && email.trim().length > 0) {
+    filter.email = new RegExp(email.trim(), "i");
   }
 
   const [users, total] = await Promise.all([
@@ -59,7 +61,7 @@ const getAllUsers = async (req: Request, res: Response) => {
         email: true,
         role: true,
       },
-      ...(orderBy?.toString().trim()?.length && {
+      ...(orderBy?.trim()?.length && {
         orderBy: {
           email: orderBy === "asc" ? "asc" : "desc",
         },
@@ -74,11 +76,59 @@ const getAllUsers = async (req: Request, res: Response) => {
     responseSuccessfulHandler("get all users success", 200, {
       data: users,
       totalPage: Math.ceil(total / +limit),
-      page: Number(page),
     })
   );
 };
 // get analytics ('users count' , 'best rooms' , 'earned money from reservations' , family count)
-const getAnalytics = async (req: Request, res: Response) => {};
+const getAnalytics = async (req: Request, res: Response) => {
+  const [users, rooms, reservations, earnedMoney, allReservations] =
+    await Promise.all([
+      prisma.user.count(),
+      prisma.room.count(),
+      prisma.reservation.count(),
+      prisma.reservation.aggregate({
+        _sum: {
+          total_price: true,
+        },
+      }),
+      prisma.reservation.findMany({
+        select: {
+          total_price: true,
+          start_date: true,
+        },
+      }),
+    ]);
+
+  const monthlyMap: Record<string, number> = {};
+
+  for (const res of allReservations) {
+    const date = new Date(res.start_date);
+    const month = date.toLocaleString("default", { month: "short" });
+    const year = date.getFullYear();
+    const label = `${month} ${year}`;
+
+    monthlyMap[label] = (monthlyMap[label] || 0) + Number(res.total_price);
+  }
+
+  // Convert to chart-friendly array
+  const chartEarnedMonth = Object.entries(monthlyMap).map(([label, value]) => ({
+    label,
+    value,
+  }));
+
+  const data = {
+    users,
+    rooms,
+    reservations,
+    money: earnedMoney._sum.total_price?.toFixed(4),
+    chartEarnedMonth,
+  };
+
+  res.status(200).json(
+    responseSuccessfulHandler("Analytics is created successfully", 200, {
+      data,
+    })
+  );
+};
 
 export { updateUserRole, getAnalytics, getAllUsers };

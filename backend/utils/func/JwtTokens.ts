@@ -1,13 +1,10 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import {
   CLIENT_SCREE_JWT,
   JWT_SECRET,
   REFRESH_SECRET,
+  SECRET,
 } from "../../constants/Env.js";
-
-interface TokenPayload {
-  id: number;
-}
 
 const createToken = (userId: number) => {
   if (!JWT_SECRET) throw new Error("JWT_SECRET is not defined");
@@ -34,26 +31,28 @@ const createRefreshToken = (userId: number) => {
 export const createUserToken = () => {
   if (!CLIENT_SCREE_JWT) throw new Error("CONST JWT_SECRET is not defined");
   try {
-    const token = jwt.sign({}, CLIENT_SCREE_JWT);
+    const token = jwt.sign({ secret: SECRET }, CLIENT_SCREE_JWT, {
+      expiresIn: "1y",
+    });
     return token;
   } catch (error) {
     console.error(error);
   }
 };
 
-const verifyToken = (token: string, SECRET: string): TokenPayload => {
+const verifyToken = (token: string, SECRET: string): JwtPayload => {
   if (!SECRET) throw new Error("JWT_SECRET is not defined");
 
   try {
-    const decoded = jwt.verify(token, SECRET) as TokenPayload;
+    const decoded = jwt.verify(token, SECRET) as JwtPayload;
     return decoded;
   } catch (error) {
     throw new Error("Invalid or expired token");
   }
 };
 
-const decodeToken = (token: string) => {
-  return jwt.decode(token);
+const decodeToken = (token: string): JwtPayload => {
+  return jwt.decode(token) as JwtPayload;
 };
 
 export { createToken, verifyToken, decodeToken, createRefreshToken };

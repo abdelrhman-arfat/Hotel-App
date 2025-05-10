@@ -34,5 +34,5 @@ app.use((_, res) => {
 });
 
 app.listen(PORT || 3002, () => {
-  console.log("server is running in post 3002");
+  console.log(`server is running in port ${PORT || 3002}`);
 });

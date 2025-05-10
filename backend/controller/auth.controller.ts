@@ -9,23 +9,27 @@ import { PrismaClient } from "@prisma/client";
 import { sendEmail } from "../utils/func/sendEmail.js";
 
 import { returnMessageDesign } from "../utils/func/ReturnMessageDesign.js";
-import { createRefreshToken, createToken } from "../utils/func/JwtTokens.js";
-import { NODE_ENV } from "../constants/Env.js";
+import {
+  createRefreshToken,
+  createToken,
+  verifyToken,
+} from "../utils/func/JwtTokens.js";
+import { NODE_ENV, REFRESH_SECRET } from "../constants/Env.js";
 import {
   refreshTokenExpire,
   SameSiteToken,
   tokenExpire,
 } from "../constants/TokenCookiesSetting.js";
+import { configDotenv } from "dotenv";
+import { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 // first chick the token from the clint side
 const signInOrSignUp = async (req: Request, res: Response) => {
   const { email, fullName, image } = req.body;
-  console.log(email, fullName, image);
   const userExist = await prisma.user.findUnique({
     where: { email },
   });
-
   if (!userExist) {
     const user = await prisma.user.create({
       data: {
@@ -35,8 +39,10 @@ const signInOrSignUp = async (req: Request, res: Response) => {
         role: "customer",
       },
     });
+
     const token = createToken(user.id);
     const refreshToken = createRefreshToken(user.id);
+
     res.cookie("backendToken", token, {
       httpOnly: true,
       secure: NODE_ENV === "production",
@@ -60,6 +66,7 @@ const signInOrSignUp = async (req: Request, res: Response) => {
       ),
       "Hello in hotel project"
     );
+
     return res.status(200).json(
       responseSuccessfulHandler(" sign up success ", 200, {
         data: {
@@ -72,33 +79,28 @@ const signInOrSignUp = async (req: Request, res: Response) => {
   const token = createToken(userExist.id);
   const refreshToken = createRefreshToken(userExist.id);
 
-  res.cookie("token", token, {
+  res.cookie("backendToken", token, {
     httpOnly: true,
     secure: NODE_ENV === "production",
     sameSite: SameSiteToken,
     maxAge: tokenExpire,
   });
 
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie("backendRefreshToken", refreshToken, {
     httpOnly: true,
     secure: NODE_ENV === "production",
     sameSite: SameSiteToken,
     maxAge: refreshTokenExpire,
   });
 
-  return res.status(200).json(
-    responseSuccessfulHandler(" sign up success ", 200, {
-      data: {
-        id: userExist.id,
-        role: userExist.role,
-      },
-    })
-  );
+  return res
+    .status(200)
+    .json(responseSuccessfulHandler(" sign up success ", 200, null));
 };
 
 const deleteUserById = async (req: Request, res: Response) => {
   const user = req.user;
-  if (!user.id?.toString()) {
+  if (!user.id) {
     res.status(401).json(responseFailedHandler(401, "unauthorized"));
     return;
   }
@@ -115,4 +117,51 @@ const deleteUserById = async (req: Request, res: Response) => {
     .json(responseSuccessfulHandler("delete user success", 200, null));
 };
 
-export { signInOrSignUp, deleteUserById };
+const refreshTokenUpdate = async (req: Request, res: Response) => {
+  const user = req.user;
+
+  const refreshToken = req.cookies.backendRefreshToken;
+
+  console.log(refreshToken);
+  if (!refreshToken) {
+    res.clearCookie("backendToken");
+    res.clearCookie("backendRefreshToken");
+    res.status(401).json(responseFailedHandler(401, "unauthorized"));
+    return;
+  }
+
+  if (!REFRESH_SECRET) {
+    throw new Error("REFRESH_SECRET is not defined");
+  }
+  console.log(REFRESH_SECRET);
+
+  const decoded = verifyToken(refreshToken, REFRESH_SECRET) as JwtPayload;
+  console.log(decoded);
+  if (!decoded || user.id !== decoded.id) {
+    res.clearCookie("backendToken");
+    res.clearCookie("backendRefreshToken");
+    res.status(401).json(responseFailedHandler(401, "unauthorized"));
+    return;
+  }
+
+  const token = createToken(user.id);
+
+  res.cookie("backendToken", token, {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+    sameSite: SameSiteToken,
+    maxAge: tokenExpire,
+  });
+  res
+    .status(200)
+    .json(responseSuccessfulHandler("refresh token success", 200, null));
+};
+
+const logout = async (req: Request, res: Response) => {
+
+  res.clearCookie("backendToken");
+  res.clearCookie("backendRefreshToken");
+  res.status(200).json(responseSuccessfulHandler("logout success", 200, null));
+};
+
+export { signInOrSignUp, logout, deleteUserById, refreshTokenUpdate };

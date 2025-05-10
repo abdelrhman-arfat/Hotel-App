@@ -1,15 +1,15 @@
 import request from "supertest";
 import { PrismaClient } from "@prisma/client";
 import { ROLES } from "../constants/Roles";
+import { app } from "../index";
 
 const prisma = new PrismaClient();
 
 describe("User Controller", () => {
-  const fakeToken = "";
-  const fakeRefreshToken = "";
+  const backendToken = "";
+  const backendRefreshToken = "";
   const testUserData = {
     fullname: "test_user",
-    auth_id: "test123",
     email: "test@example.com",
     password: "123456",
     role: ROLES.CUSTOMER,
@@ -19,7 +19,7 @@ describe("User Controller", () => {
   beforeEach(async () => {
     await prisma.user.deleteMany({
       where: {
-        OR: [{ email: testUserData.email }, { auth_id: testUserData.auth_id }],
+        OR: [{ email: testUserData.email }],
       },
     });
   });
@@ -27,7 +27,7 @@ describe("User Controller", () => {
   afterEach(async () => {
     await prisma.user.deleteMany({
       where: {
-        OR: [{ email: testUserData.email }, { auth_id: testUserData.auth_id }],
+        OR: [{ email: testUserData.email }],
       },
     });
   });
@@ -59,8 +59,8 @@ describe("User Controller", () => {
       const res = await request(app)
         .post("/api/auth/logout")
         .set("Cookie", [
-          `token=${fakeToken}`,
-          `refreshToken=${fakeRefreshToken}`,
+          `backendToken=${backendToken}`,
+          `backendRefreshToken=${backendRefreshToken}`,
         ]);
 
       console.log(res.body);
@@ -75,8 +75,8 @@ describe("User Controller", () => {
       const res = await request(app)
         .post("/api/auth/refresh-token")
         .set("Cookie", [
-          `token=${fakeToken}`,
-          `refreshToken=${fakeRefreshToken}`,
+          `backendToken=${backendToken}`,
+          `backendRefreshToken=${backendRefreshToken}`,
         ]);
 
       expect([200, 401]).toContain(res.statusCode);
@@ -90,7 +90,7 @@ describe("User Controller", () => {
         .send({
           id: 119,
         })
-        .set("Cookie", [`token=${fakeToken}`]);
+        .set("Cookie", [`backendToken=${backendToken}`]);
 
       expect([200, 401]).toContain(res.statusCode);
       expect(res.body).toHaveProperty("message");
