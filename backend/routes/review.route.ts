@@ -56,16 +56,19 @@ router
 router
   .get(
     "/all-reviews",
+    tryCatchHandler(authMiddleware),
     tryCatchHandler(employeeMiddleware),
     tryCatchHandler(getAllReviews)
   )
   .get(
     "/by-room-id/:roomId",
+    tryCatchHandler(authMiddleware),
     tryCatchHandler(employeeMiddleware),
     tryCatchHandler(getReviewsByRoomId)
   ) // roomId from the params and sort tech asc or desc with query params
   .delete(
     "/delete-review/:reviewId",
+    tryCatchHandler(authMiddleware),
     tryCatchHandler(employeeMiddleware),
     tryCatchHandler(deleteReviewByEmployees)
   );

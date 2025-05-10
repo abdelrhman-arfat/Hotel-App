@@ -69,7 +69,18 @@ const getRoomById = async (req: Request, res: Response) => {
     },
     include: {
       room_images: true,
-      reviews: true,
+      reviews: {
+        select: {
+          review_text: true,
+          rate: true,
+          user: {
+            select: {
+              full_name: true,
+              image: true,
+            },
+          },
+        },
+      },
     },
   });
 

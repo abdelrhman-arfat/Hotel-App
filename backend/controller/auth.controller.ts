@@ -122,7 +122,6 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
 
   const refreshToken = req.cookies.backendRefreshToken;
 
-  console.log(refreshToken);
   if (!refreshToken) {
     res.clearCookie("backendToken");
     res.clearCookie("backendRefreshToken");
@@ -133,10 +132,8 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
   if (!REFRESH_SECRET) {
     throw new Error("REFRESH_SECRET is not defined");
   }
-  console.log(REFRESH_SECRET);
 
   const decoded = verifyToken(refreshToken, REFRESH_SECRET) as JwtPayload;
-  console.log(decoded);
   if (!decoded || user.id !== decoded.id) {
     res.clearCookie("backendToken");
     res.clearCookie("backendRefreshToken");
@@ -158,7 +155,6 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
 };
 
 const logout = async (req: Request, res: Response) => {
-
   res.clearCookie("backendToken");
   res.clearCookie("backendRefreshToken");
   res.status(200).json(responseSuccessfulHandler("logout success", 200, null));

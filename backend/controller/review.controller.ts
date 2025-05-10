@@ -265,8 +265,9 @@ const getAllReviews = async (req: Request, res: Response) => {
       include: {
         user: {
           select: {
-            id: true,
             email: true,
+            full_name: true,
+            image: true,
           },
         },
       },

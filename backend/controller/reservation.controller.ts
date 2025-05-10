@@ -116,6 +116,7 @@ const getMyReservations = async (req: Request, res: Response) => {
   const [reservations, totalReservation] = await Promise.all([
     prisma.reservation.findMany({
       take: limit,
+
       skip,
       where: { user_id: userId },
       include: {
@@ -232,6 +233,15 @@ const getReservationByReservationEmailId = async (
       room_id: +roomId,
       user: {
         email: userEmail,
+      },
+    },
+    include: {
+      room: {
+        select: {
+          title: true,
+          main_image: true,
+          price_per_day: true,
+        },
       },
     },
   });
