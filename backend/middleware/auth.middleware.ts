@@ -14,7 +14,7 @@ declare global {
         email: string;
         role: string;
         image?: string;
-        name: string;
+        fullname: string;
         bkToken?: string;
         bkRefreshToken?: string;
         GoogleToken?: string;
@@ -71,7 +71,7 @@ const authMiddleware = async (
     email: user.email,
     id: user.id,
     image: user.image,
-    name: user.full_name,
+    fullname: user.full_name,
   };
   next();
 };

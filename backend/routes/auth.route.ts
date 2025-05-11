@@ -5,7 +5,7 @@ import {
   refreshTokenUpdate,
   logout,
   googleCallback,
-  getMyDate
+  getMyDate,
 } from "../controller/auth.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import tryCatchHandler from "../utils/func/tryCatchHandler.js";
@@ -36,7 +36,7 @@ router
     }),
     tryCatchHandler(googleCallback)
   )
-  .get("/me" ,tryCatchHandler(authMiddleware),tryCatchHandler(getMyDate))
+  .get("/me", tryCatchHandler(authMiddleware), tryCatchHandler(getMyDate))
   .post(
     "/login-signup",
     tryCatchHandler(backendTokenMiddleware),

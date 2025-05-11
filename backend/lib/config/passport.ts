@@ -27,7 +27,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
-        const fullName = profile.displayName;
+        const fullname = profile.displayName;
         const image = profile.photos[0].value;
 
         const userExist = await prisma.user.findUnique({
@@ -38,7 +38,7 @@ passport.use(
           : await prisma.user.create({
               data: {
                 email,
-                full_name: fullName,
+                full_name: fullname,
                 image,
                 role: "customer",
               },
@@ -61,7 +61,7 @@ passport.use(
 
         const userData = {
           email,
-          fullName,
+          fullname,
           image,
           bkToken,
           bkRefreshToken,

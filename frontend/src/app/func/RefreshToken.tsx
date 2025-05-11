@@ -1,22 +1,19 @@
 "use client";
 import axiosInstance from "@/lib/API/axiosInstance";
 import { useCallback, useEffect } from "react";
-import { useUserSelector } from "../hooks/appSelector";
 import { useAppDispatch } from "../hooks/appDispatch";
-import { logout } from "../_RTK/redux-slices/UserAuth";
+import { logout, setUserAuth } from "../_RTK/redux-slices/UserAuth";
 
 const RefreshToken = () => {
-  const user = useUserSelector();
   const dispatch = useAppDispatch();
   const refresh = useCallback(async () => {
-    if (user.isLoggedIn) {
-      const res = await axiosInstance.post("/auth/refresh-token");
-      if (res.status !== 200) {
-        dispatch(logout());
-      }
-      return res;
+    const res = await axiosInstance.post("/auth/refresh-token");
+    if (res.status !== 200) {
+      dispatch(logout());
     }
-  }, [dispatch, user]);
+    dispatch(setUserAuth(res.data.data.data));
+    return res;
+  }, [dispatch]);
 
   useEffect(() => {
     refresh();

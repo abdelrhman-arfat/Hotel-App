@@ -171,9 +171,11 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
     sameSite: SameSiteToken,
     maxAge: tokenExpire,
   });
-  res
-    .status(200)
-    .json(responseSuccessfulHandler("refresh token success", 200, null));
+  res.status(200).json(
+    responseSuccessfulHandler("refresh token success", 200, {
+      data: user,
+    })
+  );
 };
 
 const logout = async (req: Request, res: Response) => {
@@ -194,7 +196,7 @@ const getMyDate = async (req: Request, res: Response) => {
       data: {
         id: user.id,
         email: user.email,
-        fullname: user.name,
+        fullname: user.fullname,
         image: user.image,
         role: user.role,
       },

@@ -8,7 +8,7 @@ const AuthCard = () => {
   return user.isLoggedIn ? (
     <UserCard
       user={{
-        fullName: user.user?.fullname ?? "",
+        fullname: user.user?.fullname ?? "",
         image: user.user?.image ?? "",
       }}
     />
