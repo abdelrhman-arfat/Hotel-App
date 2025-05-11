@@ -30,5 +30,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       return true;
     },
+    redirect: async () => {
+      return "/";
+    },
   },
 });

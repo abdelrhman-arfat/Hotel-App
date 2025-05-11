@@ -4,22 +4,22 @@ import Link from "next/link";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import LoginForm from "./LoginForm";
+import AuthCard from "../card/AuthCard";
 
 const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
-    { label: "Services", href: "/services" },
+    { label: "Rooms", href: "/room" },
     { label: "Contact", href: "/contact" },
   ];
-  const logo = "HTEL";
+  const logo = "HOTEL";
   return (
-    <header className="flex h-20 w-full items-center px-4 md:px-6 border-b border-gray-200 dark:border-gray-800">
+    <header className="flex h-[90px] mt-6 w-full items-center px-4 md:px-6 border-b border-gray-200 dark:border-gray-800">
       {/* Mobile Menu */}
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="lg:hidden">
+          <Button variant="outline" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
@@ -27,6 +27,7 @@ const Navbar = () => {
           <Link href="/" className="flex items-center gap-2 mb-6">
             <span className="text-xl font-bold">{logo}</span>
           </Link>
+          <AuthCard />
           <nav className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link
@@ -38,19 +39,16 @@ const Navbar = () => {
               </Link>
             ))}
           </nav>
-          <div className="mt-6 border-t pt-4">
-            <LoginForm />
-          </div>
         </SheetContent>
       </Sheet>
 
       {/* Desktop Logo */}
       <Link href="/" className="flex items-center gap-2 ml-4 lg:ml-0 mr-8">
-        <span className="text-xl font-bold hidden lg:inline">{logo}</span>
+        <span className="text-xl font-bold hidden md:inline">{logo}</span>
       </Link>
 
       {/* Desktop Navigation */}
-      <nav className="hidden lg:flex gap-6 items-center flex-1">
+      <nav className="hidden md:flex gap-6 items-center flex-1">
         {navLinks.map((link) => (
           <Link
             key={link.label}
@@ -63,8 +61,8 @@ const Navbar = () => {
       </nav>
 
       {/* Desktop Auth Buttons */}
-      <div className="hidden lg:flex items-center gap-4">
-        <LoginForm />
+      <div className="hidden md:flex items-center gap-4">
+        <AuthCard />
       </div>
     </header>
   );
