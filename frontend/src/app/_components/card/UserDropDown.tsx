@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { LogOut, User } from "lucide-react";
-import { signOut } from "@/auth";
 
 const UserDropDown = () => {
-  const handleLogout = async () => {
-    "use server";
-    await signOut();
-  };
   return (
     <div className="absolute right-0 mt-2 w-44 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 z-50 overflow-hidden text-right">
       <Link
@@ -17,15 +12,10 @@ const UserDropDown = () => {
         <span className="flex-1">Profile</span>
       </Link>
 
-      <form action={handleLogout}>
-        <button
-          type="submit"
-          className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
-        >
-          <LogOut className="w-4 h-4" />
-          <span className="flex-1">Log out</span>
-        </button>
-      </form>
+      <button className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+        <LogOut className="w-4 h-4" />
+        <span className="flex-1">Log out</span>
+      </button>
     </div>
   );
 };

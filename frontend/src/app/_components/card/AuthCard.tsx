@@ -1,16 +1,15 @@
-import React from "react";
-import AuthLinks from "../Links/AuthLinks";
+"use client";
 import UserCard from "./UserCard";
-import { auth } from "@/auth";
+import { useUserSelector } from "@/app/hooks/appSelector";
+import AuthLinks from "../Links/AuthLinks";
 
-const AuthCard = async () => {
-  const session = await auth();
-
-  return session && session.user ? (
+const AuthCard = () => {
+  const user = useUserSelector();
+  return user.isLoggedIn ? (
     <UserCard
       user={{
-        name: session.user.name ?? "",
-        image: session.user.image ?? "",
+        fullName: user.user?.fullname ?? "",
+        image: user.user?.image ?? "",
       }}
     />
   ) : (

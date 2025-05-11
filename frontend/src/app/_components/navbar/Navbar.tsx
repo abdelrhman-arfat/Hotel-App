@@ -15,7 +15,7 @@ const Navbar = () => {
   ];
   const logo = "HOTEL";
   return (
-    <header className="flex h-[90px] mt-6 w-full items-center px-4 md:px-6 border-b border-gray-200 dark:border-gray-800">
+    <div className="flex h-[90px] mt-6 w-full items-center px-4 md:px-6 ">
       {/* Mobile Menu */}
       <Sheet>
         <SheetTrigger asChild>
@@ -64,7 +64,7 @@ const Navbar = () => {
       <div className="hidden md:flex items-center gap-4">
         <AuthCard />
       </div>
-    </header>
+    </div>
   );
 };
 

@@ -14,13 +14,12 @@ import {
   createToken,
   verifyToken,
 } from "../utils/func/JwtTokens.js";
-import { NODE_ENV, REFRESH_SECRET } from "../constants/Env.js";
+import { CLIENT_URL, NODE_ENV, REFRESH_SECRET } from "../constants/Env.js";
 import {
   refreshTokenExpire,
   SameSiteToken,
   tokenExpire,
 } from "../constants/TokenCookiesSetting.js";
-import { configDotenv } from "dotenv";
 import { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
@@ -98,6 +97,29 @@ const signInOrSignUp = async (req: Request, res: Response) => {
     .json(responseSuccessfulHandler(" sign up success ", 200, null));
 };
 
+const googleCallback = async (req: Request, res: Response) => {
+  const user = req.user;
+
+  if (!user || !user.bkToken || !user.bkRefreshToken) {
+    return res.redirect("/login");
+  }
+  res.cookie("backendToken", user.bkToken, {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+    sameSite: SameSiteToken,
+    maxAge: tokenExpire,
+  });
+
+  res.cookie("backendRefreshToken", user.bkRefreshToken, {
+    httpOnly: true,
+    secure: NODE_ENV === "production",
+    sameSite: SameSiteToken,
+    maxAge: refreshTokenExpire,
+  });
+
+  res.redirect(`${CLIENT_URL}/success`);
+};
+
 const deleteUserById = async (req: Request, res: Response) => {
   const user = req.user;
   if (!user.id) {
@@ -160,4 +182,30 @@ const logout = async (req: Request, res: Response) => {
   res.status(200).json(responseSuccessfulHandler("logout success", 200, null));
 };
 
-export { signInOrSignUp, logout, deleteUserById, refreshTokenUpdate };
+const getMyDate = async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user.id) {
+    res.status(401).json(responseFailedHandler(401, "unauthorized"));
+    return;
+  }
+
+  res.status(200).json(
+    responseSuccessfulHandler("get my date success", 200, {
+      data: {
+        id: user.id,
+        email: user.email,
+        fullname: user.name,
+        image: user.image,
+        role: user.role,
+      },
+    })
+  );
+};
+export {
+  getMyDate,
+  signInOrSignUp,
+  logout,
+  deleteUserById,
+  refreshTokenUpdate,
+  googleCallback,
+};

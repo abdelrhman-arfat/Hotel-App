@@ -1,13 +1,15 @@
+"use client";
+
 import React from "react";
-import { auth } from "@/auth";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useUserSelector } from "../hooks/appSelector";
 
-const IsLogin = async ({ children }: { children: React.ReactNode }) => {
-  const session = await auth();
+const IsLogin = ({ children }: { children: React.ReactNode }) => {
+  const user = useUserSelector();
 
-  if (!session) {
+  if (user.isLoggedIn) {
     return <>{children}</>;
   }
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
+import RefreshToken from "./func/RefreshToken";
+import AppProvider from "./_RTK/provider/AppProvider";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -35,7 +37,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.variable}  antialiased`}>{children}</body>
+      <body
+        className={`${roboto.variable}  antialiased max-w-full overflow-x-hidden min-h-full`}
+      >
+        <AppProvider>
+          <RefreshToken />
+          {children}
+        </AppProvider>
+      </body>
     </html>
   );
 }

@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import passport from "passport";
 import cookieParser from "cookie-parser";
 import { authRouter } from "./routes/auth.route.js";
 import { roomRouter } from "./routes/room.route.js";
@@ -10,10 +11,12 @@ import { reviewRouter } from "./routes/review.route.js";
 import { CLIENT_URL, PORT } from "./constants/Env.js";
 import responseFailedHandler from "./utils/types/response/responseFailedHandler.js";
 
+import "./lib/config/passport.js";
+
 export const app = express();
 
 app.use(helmet());
-
+app.use(passport.initialize());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));

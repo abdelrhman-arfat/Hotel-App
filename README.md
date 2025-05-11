@@ -24,6 +24,7 @@ The system includes secure authentication, email verification, and a full-featur
 - 🔑 bcrypt for password hashing if user login recruiter, clerk or author auth system own hashing
 - ☁️ Cloudinary for image upload/management
 - ✅ express-validator for input validation
+- 🔐 Passport for login/authentication
 - 🌐 CORS for cross-origin requests
 - 📧 Nodemailer for email messages
 - 💰 Stripe for payment integration
@@ -39,7 +40,6 @@ The system includes secure authentication, email verification, and a full-featur
 - 🎨 Tailwind CSS for styling
 - 🧩 shadcn/ui for reusable components
 - 🔔 react-hot-toast for notifications
-- 🔐 Next Auth for login/authentication
 - 🧪 Jest for frontend testing
 
 ---
@@ -63,12 +63,8 @@ git clone https://github.com/abdelrhman-arfat/Hotel-project.git
 ## .env.local frontend :
 
 ```bash
+NEXT_PUBLIC_BACKEND_URL=http://localhost:.../api
 
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3004/api
-AUTH_SECRET= ..
-AUTH_GOOGLE_ID = ..
-AUTH_GOOGLE_SECRET = ...
-BACKEND_TOKEN= ...
 
 ```
 

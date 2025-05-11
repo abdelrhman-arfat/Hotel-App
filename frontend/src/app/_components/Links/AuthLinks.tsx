@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const AuthLinks = () => {
   return (
-    <div className="flex flex-col md:flex-row gap-4 items-center">
+    <div className="flex gap-4 items-center">
       <Link href="/register">
         <Button
           variant="outline"
