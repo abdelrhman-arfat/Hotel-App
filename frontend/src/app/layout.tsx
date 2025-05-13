@@ -37,9 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${roboto.variable}  antialiased max-w-full overflow-x-hidden min-h-full`}
-      >
+      <body className={`${roboto.variable}  antialiased   min-h-full`}>
         <AppProvider>
           <RefreshToken />
           {children}

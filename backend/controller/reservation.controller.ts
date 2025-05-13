@@ -81,7 +81,7 @@ const createReservation = async (req: Request, res: Response) => {
     },
   });
   const [header, body, footer] = ReservationMessage(
-    user.name,
+    user.fullname,
     reservation.id,
     user.id,
     room.id,

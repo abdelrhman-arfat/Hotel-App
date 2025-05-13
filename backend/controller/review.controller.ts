@@ -185,17 +185,20 @@ const getSomeReviews = async (req: Request, res: Response) => {
         gt: 4,
       },
     },
-    include: {
+    select: {
+      id: true,
+      rate: true,
+      review_text: true,
+      createdAt: true,
       user: {
         select: {
-          id: true,
-          email: true,
           image: true,
           full_name: true,
         },
       },
     },
   });
+
   if (!reviews) {
     res.status(404).json(responseFailedHandler(404, "Reviews not found"));
     return;

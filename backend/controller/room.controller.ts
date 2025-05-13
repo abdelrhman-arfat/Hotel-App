@@ -109,18 +109,17 @@ const getAllRooms = async (req: Request, res: Response) => {
   const [rooms, totalRooms] = await Promise.all([
     prisma.room.findMany({
       where: {
-        ...(familyCount && { family_count: +familyCount }),
-        price_per_day: {
-          ...(minPrice && { gte: +minPrice }),
-          ...(maxPrice && { lte: +maxPrice }),
-        },
-        title: title ? { contains: title } : undefined,
+        ...(familyCount && !isNaN(+familyCount) && { family_count: +familyCount }),
+        ...((minPrice || maxPrice) && {
+          price_per_day: {
+            ...(minPrice && !isNaN(+minPrice) && { gte: +minPrice }),
+            ...(maxPrice && !isNaN(+maxPrice) && { lte: +maxPrice })
+          }
+        }),
+        ...(title && title.trim() !== '' && { title: { contains: title.trim() } })
       },
       skip,
       take: limit,
-      include: {
-        room_images: true,
-      },
     }),
     await prisma.room.count(),
   ]);
@@ -142,7 +141,6 @@ const getFeaturedRooms = async (req: Request, res: Response) => {
     skip,
     take: +limit,
     include: {
-      room_images: true,
       _count: {
         select: {
           reservations: true,

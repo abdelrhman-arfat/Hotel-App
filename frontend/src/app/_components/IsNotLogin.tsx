@@ -6,10 +6,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useUserSelector } from "../hooks/appSelector";
 
-const IsLogin = ({ children }: { children: React.ReactNode }) => {
+const IsNotLogin = ({ children }: { children: React.ReactNode }) => {
   const user = useUserSelector();
 
-  if (user.isLoggedIn) {
+  if (!user.isLoggedIn) {
     return <>{children}</>;
   }
 
@@ -38,4 +38,4 @@ const IsLogin = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default IsLogin;
+export default IsNotLogin;

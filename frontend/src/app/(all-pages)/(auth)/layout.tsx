@@ -1,4 +1,4 @@
-import IsLogin from "@/app/_components/IsLogin";
+import IsNotLogin from "@/app/_components/IsNotLogin";
 
 export default function RootLayout({
   children,
@@ -7,7 +7,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <IsLogin>{children}</IsLogin>
+      <IsNotLogin>{children}</IsNotLogin>
     </>
   );
 }

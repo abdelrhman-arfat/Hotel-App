@@ -1,12 +1,5 @@
+import { TUser } from "@/app/types/User";
 import { createSlice } from "@reduxjs/toolkit";
-
-type TUser = {
-  email: string;
-  image: string;
-  fullname: string;
-  role: string;
-  id: number;
-};
 
 type initialState = {
   isLoggedIn: boolean;

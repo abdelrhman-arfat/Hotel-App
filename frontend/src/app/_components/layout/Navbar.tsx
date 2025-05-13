@@ -9,13 +9,12 @@ import AuthCard from "../card/AuthCard";
 const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
+    { label: "Rooms", href: "/rooms" },
     { label: "About", href: "/about" },
-    { label: "Rooms", href: "/room" },
-    { label: "Contact", href: "/contact" },
   ];
   const logo = "HOTEL";
   return (
-    <div className="flex h-[90px] mt-6 w-full items-center px-4 md:px-6 ">
+    <div className="flex px-4  mt-6 w-full items-center  md:px-6 ">
       {/* Mobile Menu */}
       <Sheet>
         <SheetTrigger asChild>
@@ -27,7 +26,6 @@ const Navbar = () => {
           <Link href="/" className="flex items-center gap-2 mb-6">
             <span className="text-xl font-bold">{logo}</span>
           </Link>
-          <AuthCard />
           <nav className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link
@@ -39,6 +37,7 @@ const Navbar = () => {
               </Link>
             ))}
           </nav>
+          <AuthCard />
         </SheetContent>
       </Sheet>
 

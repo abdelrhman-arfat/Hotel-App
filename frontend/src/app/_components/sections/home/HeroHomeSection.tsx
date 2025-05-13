@@ -4,14 +4,12 @@ import React from "react";
 const HeroHomeSection = () => {
   return (
     <section
-      className="relative rounded-xl overflow-hidden w-full mt-4 h-screen bg-cover bg-center"
+      className="relative rounded-xl overflow-hidden w-full mt-4 h-screen bg-gray-400 bg-cover bg-center"
       style={{ backgroundImage: 'url("/hotel-image.jpg")' }}
     >
-      {/* Gradient Overlay for a more sophisticated feel */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
 
-      {/* Content */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white px-4">
+      <div className="absolute bg-black/50 w-full h-full flex items-center justify-center flex-col top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white px-4">
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-4 leading-tight tracking-wide">
           Welcome to Our Hotel
         </h1>
@@ -20,7 +18,7 @@ const HeroHomeSection = () => {
           Unwind, relax, and enjoy a world-class experience.
         </p>
         <a
-          href="#booking"
+          href="#featured"
           className="bg-yellow-500 text-gray-900 py-3 px-8 rounded-full text-lg font-semibold shadow-lg hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105"
         >
           Book Your Stay
@@ -28,7 +26,7 @@ const HeroHomeSection = () => {
       </div>
 
       {/* Optional: Image Accent/Additional Design Element */}
-      <div className="absolute bottom-10 right-10 opacity-40">
+      <div className="absolute container bottom-10 right-10 opacity-40">
         <Image
           fill
           sizes="100%"
