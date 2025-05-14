@@ -92,17 +92,6 @@ const aboutSections = [
 ];
 
 // Animation variant
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: () => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut",
-    },
-  }),
-};
 
 const AboutPage = () => {
   return (
@@ -128,8 +117,9 @@ const AboutPage = () => {
         {aboutSections.map((section, index) => (
           <motion.div
             key={index}
-            variants={fadeUp}
-            whileInView="visible"
+            initial={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             custom={index}
           >

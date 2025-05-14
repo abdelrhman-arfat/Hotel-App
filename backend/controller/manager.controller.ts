@@ -28,31 +28,20 @@ const updateUserRole = async (req: Request, res: Response) => {
 const getAllUsers = async (req: Request, res: Response) => {
   const {
     role,
-    email,
     orderBy,
   }: {
     role?: TRoles;
-    email?: string;
     orderBy?: string;
   } = req.query;
   const [skip, limit] = returnSkip(req);
-  let filter: {
-    role?: string;
-    email?: RegExp;
-  } = {};
-
-  if (role && [ROLES.CUSTOMER, ROLES.MANAGER].includes(role as string)) {
-    filter.role = role as string;
-  }
-  if (email && email.trim().length > 0) {
-    filter.email = new RegExp(email.trim(), "i");
-  }
 
   const [users, total] = await Promise.all([
     prisma.user.findMany({
       where: {
-        role: filter?.role as TRoles | undefined,
-        email: filter.email ? { contains: filter.email.source } : undefined,
+        ...(role &&
+          [ROLES.CUSTOMER, ROLES.EMPLOYEE, ROLES.MANAGER].includes(role) && {
+            role: role,
+          }),
       },
       select: {
         id: true,

@@ -1,7 +1,10 @@
 import { BACKEND_URL } from "@/app/constants/ENV";
+import { TAnalytics } from "@/app/types/Analytics";
+import { TUserQuery } from "@/app/types/QueryUsers";
 import { TResponse } from "@/app/types/Response";
 import { TReview } from "@/app/types/Review";
 import { TRoom } from "@/app/types/Room";
+import { TUser } from "@/app/types/User";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 type TRoomQuery = {
@@ -12,6 +15,8 @@ type TRoomQuery = {
   maxPrice?: number;
 };
 
+type TEmpty = { s?: string } | undefined;
+
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -19,7 +24,7 @@ export const api = createApi({
     credentials: "include",
   }),
   endpoints: (b) => ({
-    getFeaturedRooms: b.query<TResponse<TRoom[]>, void>({
+    getFeaturedRooms: b.query<TResponse<TRoom[]>, TEmpty>({
       query: () => "/room/featured",
     }),
     getAllRooms: b.query<TResponse<TRoom[]>, TRoomQuery>({
@@ -29,8 +34,15 @@ export const api = createApi({
     getRoomById: b.query({
       query: (id) => `/room/get-by-id/${id}`,
     }),
-    getSomeReviews: b.query<TResponse<TReview[]>, void>({
+    getSomeReviews: b.query<TResponse<TReview[]>, TEmpty>({
       query: () => `/review/some-reviews/`,
+    }),
+    getManagerAnalytics: b.query<TResponse<TAnalytics>, TEmpty | undefined>({
+      query: () => `/manager/analytics`,
+    }),
+    getAllUsers: b.query<TResponse<TUser>, TUserQuery>({
+      query: ({ role, page, orderBy }) =>
+        `/manager/get-all-users?page=${page}&role=${role}&orderBy=${orderBy}`,
     }),
   }),
 });
@@ -40,4 +52,6 @@ export const {
   useGetRoomByIdQuery,
   useGetSomeReviewsQuery,
   useGetAllRoomsQuery,
+  useGetManagerAnalyticsQuery,
+  useGetAllUsersQuery,
 } = api;

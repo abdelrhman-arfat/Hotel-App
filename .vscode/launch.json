@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/COMPUMARTS/OneDrive/Desktop/HOTLE_MERN/frontend/src/app/_components/navbar",
-      "program": "c:/Users/COMPUMARTS/OneDrive/Desktop/HOTLE_MERN/frontend/src/app/_components/navbar/build/Debug/outDebug",
+      "cwd": "c:/Users/COMPUMARTS/OneDrive/Desktop/HOTLE_MERN/frontend/src/app/_components",
+      "program": "c:/Users/COMPUMARTS/OneDrive/Desktop/HOTLE_MERN/frontend/src/app/_components/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

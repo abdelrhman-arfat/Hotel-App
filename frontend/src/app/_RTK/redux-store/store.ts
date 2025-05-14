@@ -1,17 +1,27 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { api } from "../RTK-query/query";
-import userAuth from "../redux-slices/UserAuth";
-import filterSlice from "../redux-slices/FilterSlice";
+import { persistedReducer } from "../redux-persist/persist";
+import { persistStore } from "redux-persist";
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 const store = configureStore({
-  reducer: {
-    user: userAuth,
-    filter: filterSlice,
-    [api.reducerPath]: api.reducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(api.middleware),
   devTools: process.env.NODE_ENV === "development",
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -11,7 +11,7 @@ const RoomsSection = () => {
   const filter = useFilterSelector();
   const [page, setPage] = useState<number>(1);
   const { data, isLoading } = useGetAllRoomsQuery({
-    ...filter,
+    ...(filter as object),
     page: page,
   });
 

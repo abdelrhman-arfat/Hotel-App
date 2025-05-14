@@ -20,7 +20,7 @@ const updateRoleValidation = [
 router.use(tryCatchHandler(authMiddleware), tryCatchHandler(managerMiddleware));
 
 router
-  .post(
+  .put(
     "/update-user-role",
     updateRoleValidation,
     tryCatchHandler(handleValidationErrors),
