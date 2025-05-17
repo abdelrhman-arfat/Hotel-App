@@ -7,9 +7,12 @@ export type TReservation = {
   room_id: number;
   user_id: number;
   start_date: string;
+  days_count: number;
   end_date: string;
   createdAt: string;
   updatedAt: string;
+  total_price: number;
+  is_active: boolean;
   room: TRoom;
   user: TUser;
   review: TReview;

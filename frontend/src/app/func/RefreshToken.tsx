@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/API/axiosInstance";
 import { useCallback, useEffect } from "react";
 import { useAppDispatch } from "../hooks/appDispatch";
 import { logout, setUserAuth } from "../_RTK/redux-slices/UserAuth";
+import { useUserSelector } from "../hooks/appSelector";
 
 const RefreshToken = () => {
   const dispatch = useAppDispatch();
@@ -14,17 +15,19 @@ const RefreshToken = () => {
     dispatch(setUserAuth(res.data.data.data));
     return res;
   }, [dispatch]);
-
+  const user = useUserSelector();
   useEffect(() => {
     refresh();
-    const interval = setInterval(
-      () => {
-        refresh();
-      },
-      1000 * 60 * 10
-    );
+    if (user.isLoggedIn) {
+      const interval = setInterval(
+        () => {
+          refresh();
+        },
+        1000 * 60 * 10
+      );
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   });
 
   return null;

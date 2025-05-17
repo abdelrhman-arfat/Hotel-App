@@ -37,6 +37,12 @@ const ProfileNav = ({ children }: { children: ReactNode }) => {
       available: [ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.CUSTOMER],
     },
     {
+      href: "/profile/my-reservations",
+      label: "My Bookings",
+      icon: <CalendarDays className="w-4 h-4" />,
+      available: [ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.CUSTOMER],
+    },
+    {
       href: "/profile/dashboard",
       label: "Dashboard",
       icon: <LayoutDashboard className="w-4 h-4" />,
@@ -44,20 +50,19 @@ const ProfileNav = ({ children }: { children: ReactNode }) => {
     },
     {
       href: "/profile/users",
-      label: "Users",
+      label: "All Users",
       icon: <Users className="w-4 h-4" />,
       available: [ROLES.MANAGER],
     },
-
     {
-      href: "/profile/bookings",
-      label: "Reservations",
+      href: "/profile/all-reservations",
+      label: "All Reservations",
       icon: <CalendarDays className="w-4 h-4" />,
-      available: [ROLES.MANAGER, ROLES.EMPLOYEE],
+      available: [ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.CUSTOMER],
     },
     {
       href: "/profile/rooms",
-      label: "Rooms",
+      label: "All Rooms",
       icon: <Hotel className="w-4 h-4" />,
       available: [ROLES.MANAGER, ROLES.EMPLOYEE],
     },

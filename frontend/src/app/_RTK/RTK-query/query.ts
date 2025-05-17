@@ -1,6 +1,7 @@
 import { BACKEND_URL } from "@/app/constants/ENV";
 import { TAnalytics } from "@/app/types/Analytics";
 import { TUserQuery } from "@/app/types/QueryUsers";
+import { TReservation } from "@/app/types/Reservation";
 import { TResponse } from "@/app/types/Response";
 import { TReview } from "@/app/types/Review";
 import { TRoom } from "@/app/types/Room";
@@ -12,10 +13,11 @@ type TRoomQuery = {
   minPrice?: number;
   familyCount?: number;
   page?: number;
+  limit?: number;
   maxPrice?: number;
 };
 
-type TEmpty = { s?: string } | undefined;
+type TEmpty = { s?: string } | undefined | void;
 
 export const api = createApi({
   reducerPath: "api",
@@ -24,7 +26,7 @@ export const api = createApi({
     credentials: "include",
   }),
   endpoints: (b) => ({
-    getFeaturedRooms: b.query<TResponse<TRoom[]>, TEmpty>({
+    getFeaturedRooms: b.query<TResponse<TRoom[]>, void>({
       query: () => "/room/featured",
     }),
     getAllRooms: b.query<TResponse<TRoom[]>, TRoomQuery>({
@@ -37,12 +39,22 @@ export const api = createApi({
     getSomeReviews: b.query<TResponse<TReview[]>, TEmpty>({
       query: () => `/review/some-reviews/`,
     }),
-    getManagerAnalytics: b.query<TResponse<TAnalytics>, TEmpty | undefined>({
+    getManagerAnalytics: b.query<TResponse<TAnalytics>, TEmpty>({
       query: () => `/manager/analytics`,
     }),
     getAllUsers: b.query<TResponse<TUser>, TUserQuery>({
       query: ({ role, page, orderBy }) =>
         `/manager/get-all-users?page=${page}&role=${role}&orderBy=${orderBy}`,
+    }),
+    getMyReservations: b.query<TResponse<TReservation[]>, void>({
+      query: () => `/reservation/me`,
+    }),
+    getAllReservations: b.query<
+      TResponse<TReservation[]>,
+      { limit: string; isActive: string; page?: number }
+    >({
+      query: ({ limit = "10", isActive = "all", page = 1 }) =>
+        `/reservation/all?page=${page}&limit=${+limit}&isActive=${isActive === "all" ? "" : isActive}`,
     }),
   }),
 });
@@ -54,4 +66,6 @@ export const {
   useGetAllRoomsQuery,
   useGetManagerAnalyticsQuery,
   useGetAllUsersQuery,
+  useGetMyReservationsQuery,
+  useGetAllReservationsQuery,
 } = api;

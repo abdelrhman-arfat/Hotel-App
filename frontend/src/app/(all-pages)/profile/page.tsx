@@ -1,26 +1,23 @@
 "use client";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
-import { History, CreditCard } from "lucide-react";
+import { User, Shield } from "lucide-react";
 import SettingCard from "@/app/_components/sections/profile/SettingCard";
 
 const settingsData = [
   {
-    icon: History,
-    title: "Booking History",
-    description: "View your past and upcoming bookings",
-    buttonText: "View All",
-    onClick: () => {},
+    icon: User,
+    title: "Profile Information",
+    description: "Edit your personal information and preferences",
+    buttonText: "Edit",
   },
   {
-    icon: CreditCard,
-    title: "Payment Methods",
-    description: "Manage your payment options",
-    buttonText: "Manage",
-    onClick: () => {},
+    icon: Shield,
+    title: "Security Settings",
+    description: "Update your password and security preferences",
+    buttonText: "Update",
   },
 ];
-
 const Page = () => {
   return (
     <div className="space-y-8">
@@ -40,7 +37,6 @@ const Page = () => {
             title={setting.title}
             description={setting.description}
             buttonText={setting.buttonText}
-            onClick={setting.onClick}
           />
         ))}
       </div>

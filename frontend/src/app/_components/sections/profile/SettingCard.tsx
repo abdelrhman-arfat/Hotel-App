@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "lucide-react";
+import { useCallback, useState } from "react";
 
 interface SettingCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
   buttonText: string;
-  onClick?: () => void;
+  component?: React.ReactNode;
 }
 
 const SettingCard = ({
@@ -14,8 +15,12 @@ const SettingCard = ({
   title,
   description,
   buttonText,
-  onClick,
+  component,
 }: SettingCardProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const onClick = useCallback(() => {
+    setIsOpen((p: boolean) => !p);
+  }, []);
   return (
     <div className="group rounded-lg border p-4 transition-all hover:bg-accent">
       <div className="flex items-center justify-between">
@@ -30,6 +35,7 @@ const SettingCard = ({
           {buttonText}
         </Button>
       </div>
+      {isOpen && component}
     </div>
   );
 };
