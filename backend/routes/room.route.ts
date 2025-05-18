@@ -34,10 +34,12 @@ router
     "/",
     tryCatchHandler(authMiddleware),
     tryCatchHandler(employeeMiddleware),
+    upload.fields([
+      { name: "main_image", maxCount: 1 },
+      { name: "images", maxCount: 10 },
+    ]),
     validateCreateRoom,
     tryCatchHandler(handleValidationErrors),
-    upload.single("main_image"),
-    upload.array("images"),
     tryCatchHandler(createRoom)
   )
   .put(

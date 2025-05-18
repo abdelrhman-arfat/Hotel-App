@@ -15,6 +15,7 @@ model Room {
   price_per_day     Decimal   @db.Decimal(10, 2)
   room_count        Int
   main_image        String
+  is_deleted        Boolean   @default(false)
 
   reservations      Reservation[]
   reviews           Review[]

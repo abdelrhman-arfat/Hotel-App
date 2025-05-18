@@ -18,7 +18,6 @@ const UpdateRoomForm: React.FC<UpdateRoomFormProps> = ({
   room,
   onCancel,
 }) => {
-  //
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -118,28 +117,29 @@ const UpdateRoomForm: React.FC<UpdateRoomFormProps> = ({
               </div>
             </form>
 
-            {Array.isArray(room.images) && room.images?.length > 0 && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                  Room Images
-                </h3>
-                <div className="flex flex-wrap gap-4">
-                  {room.images.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative h-24 w-36 rounded-lg overflow-hidden border"
-                    >
-                      <Image
-                        src={image}
-                        alt={`Room image ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
+            {Array.isArray(room.room_images) &&
+              room.room_images?.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                    Room Images
+                  </h3>
+                  <div className="flex flex-wrap gap-4">
+                    {room.room_images.map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative h-24 w-36 rounded-lg overflow-hidden border"
+                      >
+                        <Image
+                          src={image.image}
+                          alt={`Room image ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </CardContent>
         </Card>
       </div>

@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import responseFailedHandler from "../utils/types/response/responseFailedHandler.js";
 import responseSuccessfulHandler from "../utils/types/response/responseSuccessfulHandler.js";
 import returnSkip from "../utils/func/ReturnSkip.js";
 import { deleteExistImage } from "../lib/config/Cloudinary.js";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -11,12 +11,16 @@ const prisma = new PrismaClient();
 const createRoom = async (req: Request, res: Response) => {
   const { price, title, familyCount, description, roomsCount } = req.body;
 
-  const image = req.file ? req.file.path : null;
+  const files = req.files as {
+    [fieldname: string]: Express.Multer.File[];
+  };
 
-  if (!image) {
+  const mainImage = files?.main_image?.[0];
+
+  if (!mainImage) {
     return res
       .status(400)
-      .json(responseFailedHandler(400, "Image is required"));
+      .json(responseFailedHandler(400, "Main image is required"));
   }
 
   const newRoom = await prisma.room
@@ -27,7 +31,8 @@ const createRoom = async (req: Request, res: Response) => {
         price_per_day: +price,
         family_count: parseInt(familyCount, 10),
         room_count: parseInt(roomsCount, 10),
-        main_image: image,
+        main_image: mainImage.path,
+        is_deleted: false,
       },
     })
     .catch((e) => {
@@ -39,12 +44,15 @@ const createRoom = async (req: Request, res: Response) => {
       .status(500)
       .json(responseFailedHandler(500, "Internal Server Error"));
   }
+  const additionalImages = files?.images || [];
 
-  const images = req.files;
-
-  if (images && Array.isArray(images) && images.length > 0) {
+  if (
+    additionalImages &&
+    Array.isArray(additionalImages) &&
+    additionalImages.length > 0
+  ) {
     const createImages = prisma.roomImage.createMany({
-      data: images?.map((image: any) => ({
+      data: additionalImages?.map((image: any) => ({
         room_id: (newRoom as any).id,
         image: image.path,
       })),
@@ -66,6 +74,7 @@ const getRoomById = async (req: Request, res: Response) => {
   const room = await prisma.room.findUnique({
     where: {
       id: Number(roomId),
+      is_deleted: false,
     },
     include: {
       room_images: true,
@@ -108,15 +117,33 @@ const getAllRooms = async (req: Request, res: Response) => {
 
   const [rooms, totalRooms] = await Promise.all([
     prisma.room.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        price_per_day: true,
+        family_count: true,
+        room_count: true,
+        main_image: true,
+        room_images: {
+          select: {
+            image: true,
+          },
+        },
+      },
+
       where: {
-        ...(familyCount && !isNaN(+familyCount) && { family_count: +familyCount }),
+        is_deleted: false,
+        ...(familyCount &&
+          !isNaN(+familyCount) && { family_count: +familyCount }),
         ...((minPrice || maxPrice) && {
           price_per_day: {
             ...(minPrice && !isNaN(+minPrice) && { gte: +minPrice }),
-            ...(maxPrice && !isNaN(+maxPrice) && { lte: +maxPrice })
-          }
+            ...(maxPrice && !isNaN(+maxPrice) && { lte: +maxPrice }),
+          },
         }),
-        ...(title && title.trim() !== '' && { title: { contains: title.trim() } })
+        ...(title &&
+          title.trim() !== "" && { title: { contains: title.trim() } }),
       },
       skip,
       take: limit,
@@ -140,6 +167,9 @@ const getFeaturedRooms = async (req: Request, res: Response) => {
   const rooms = await prisma.room.findMany({
     skip,
     take: +limit,
+    where: {
+      is_deleted: false,
+    },
     include: {
       _count: {
         select: {
@@ -238,18 +268,10 @@ const deleteRoom = async (req: Request, res: Response) => {
       .status(400)
       .json(responseFailedHandler(400, "roomId is required"));
   }
-  const roomImages = await prisma.roomImage.findMany({
-    where: {
-      room_id: parseInt(roomId),
-    },
-  });
-
-  for (let i of roomImages) {
-    await deleteExistImage(i.image);
-  }
-
-  const room = await prisma.room.delete({
+  // Soft delete: set is_deleted to true
+  const room = await prisma.room.update({
     where: { id: parseInt(roomId) },
+    data: { is_deleted: true },
   });
 
   if (!room) {
@@ -257,7 +279,7 @@ const deleteRoom = async (req: Request, res: Response) => {
   }
 
   res.status(200).json(
-    responseSuccessfulHandler("Room deleted", 200, {
+    responseSuccessfulHandler("Room deleted (soft)", 200, {
       data: room,
     })
   );

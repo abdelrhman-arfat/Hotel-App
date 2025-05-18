@@ -96,9 +96,14 @@ const ReservationTable = ({
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge
-                      variant={reservation.is_active ? "default" : "secondary"}
+                      className={`${
+                        reservation.is_active && new Date(reservation.start_date) >= new Date()
+                          ? "bg-green-500 text-white"
+                          : new Date(reservation.start_date) < new Date()
+                          ? "bg-red-500 text-white"
+                          : "bg-yellow-500 text-white"
+                      } h-[16px] w-[16px] rounded-full`}
                     >
-                      {reservation.is_active ? "Active" : "Completed"}
                     </Badge>
                   </TableCell>
                 </TableRow>

@@ -6,13 +6,14 @@ import SettingCard from "@/app/_components/sections/profile/SettingCard";
 
 const settingsData = [
   {
-    icon: User,
+    icon: <User />,
+
     title: "Profile Information",
     description: "Edit your personal information and preferences",
     buttonText: "Edit",
   },
   {
-    icon: Shield,
+    icon: <Shield />,
     title: "Security Settings",
     description: "Update your password and security preferences",
     buttonText: "Update",

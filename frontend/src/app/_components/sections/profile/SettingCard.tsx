@@ -1,9 +1,8 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { LucideIcon } from "lucide-react";
-import { useCallback, useState } from "react";
-
+import { useCallback, useMemo, useState } from "react";
 interface SettingCardProps {
-  icon: LucideIcon;
+  icon: React.ReactNode;
   title: string;
   description: string;
   buttonText: string;
@@ -18,24 +17,28 @@ const SettingCard = ({
   component,
 }: SettingCardProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const compo = useMemo(() => component, [component]);
   const onClick = useCallback(() => {
     setIsOpen((p: boolean) => !p);
   }, []);
   return (
-    <div className="group rounded-lg border p-4 transition-all hover:bg-accent">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Icon className="h-5 w-5 text-primary" />
-          <div>
-            <h3 className="font-medium">{title}</h3>
-            <p className="text-sm text-muted-foreground">{description}</p>
+    <div className="flex-col flex gap-2">
+      <div className="group rounded-lg border p-4 transition-all hover:bg-accent">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {Icon}
+            <div>
+              <h3 className="font-medium">{title}</h3>
+              <p className="text-sm text-muted-foreground">{description}</p>
+            </div>
           </div>
+          <Button variant="outline" size="sm" onClick={onClick}>
+            {buttonText}
+          </Button>
         </div>
-        <Button variant="outline" size="sm" onClick={onClick}>
-          {buttonText}
-        </Button>
       </div>
-      {isOpen && component}
+
+      {compo && isOpen && compo}
     </div>
   );
 };

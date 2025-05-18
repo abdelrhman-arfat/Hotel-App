@@ -211,21 +211,32 @@ const getReservationByReservationEmailId = async (
   if (!userEmail || !emailRegEx.test(userEmail)) {
     res.status(400).json(responseFailedHandler(400, "the email is not valid"));
   }
-  //{roomId}-${userId}-${ endDay } -> '1-1-1'-2025-2-4
+  //{roomId}-${userId}-${reservationId}-${ endDay } -> '1-1-1'-2025-2-4
   const [roomId, userId, resId] = reservationId?.split("-");
+  console.log(roomId, userId, resId);
   const failedMessage = "this id isn't true please add true id and try again";
-  if (
-    !roomId ||
-    isNaN(+roomId) ||
-    !userId ||
-    isNaN(+userId) ||
-    !resId ||
-    isNaN(+resId)
-  ) {
+  if (!roomId || !userId || !resId) {
     res.status(404).json(responseFailedHandler(404, failedMessage));
     return;
   }
-
+  const user = await prisma.user.findUnique({
+    where: {
+      email: userEmail,
+    },
+  });
+  if (!user) {
+    res.status(404).json(responseFailedHandler(404, `This user not found`));
+    return;
+  }
+  const room = await prisma.room.findUnique({
+    where: {
+      id: +roomId,
+    },
+  });
+  if (!room) {
+    res.status(404).json(responseFailedHandler(404, `This room not found`));
+    return;
+  }
   const reservation = await prisma.reservation.findUnique({
     where: {
       id: +resId,
@@ -251,7 +262,7 @@ const getReservationByReservationEmailId = async (
     return;
   }
   res.status(200).json(
-    responseSuccessfulHandler("the reservation id is", 200, {
+    responseSuccessfulHandler("The reservation is true ", 200, {
       data: reservation,
     })
   );

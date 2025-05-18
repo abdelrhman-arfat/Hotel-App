@@ -5,6 +5,7 @@ const axiosInstance = axios.create({
   baseURL: BACKEND_URL,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
   withCredentials: true,
 });
