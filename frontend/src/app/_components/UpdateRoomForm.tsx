@@ -2,10 +2,10 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TRoom } from "../types/Room";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/lib/API/axiosInstance";
 import toast from "react-hot-toast";
+import RoomImageHandler from "./RoomImageHandler";
 
 interface UpdateRoomFormProps {
   room: TRoom;
@@ -43,7 +43,10 @@ const UpdateRoomForm: React.FC<UpdateRoomFormProps> = ({
           error: (err) => err.response.data.message || "Failed to update room",
         }
       )
-      .then(() => refetch());
+      .then(() => {
+        refetch();
+        onCancel();
+      });
   };
 
   return (
@@ -97,6 +100,7 @@ const UpdateRoomForm: React.FC<UpdateRoomFormProps> = ({
                   id="pricePerDay"
                   name="pricePerDay"
                   type="number"
+                  step="0.01"
                   defaultValue={room.price_per_day}
                   className="w-full mt-1 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -123,19 +127,15 @@ const UpdateRoomForm: React.FC<UpdateRoomFormProps> = ({
                   <h3 className="text-lg font-semibold text-gray-800 mb-3">
                     Room Images
                   </h3>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-6">
                     {room.room_images.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative h-24 w-36 rounded-lg overflow-hidden border"
-                      >
-                        <Image
-                          src={image.image}
-                          alt={`Room image ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
+                      <RoomImageHandler
+                        refetch={refetch}
+                        onCancel={onCancel}
+                        id={image.id}
+                        image={image.image}
+                        key={index + "image"}
+                      />
                     ))}
                   </div>
                 </div>

@@ -19,19 +19,6 @@ const AddNewRoomForm = ({
       </div>
 
       <div>
-        <label htmlFor="price" className="block mb-1 font-medium">
-          Price
-        </label>
-        <Input
-          id="price"
-          name="price"
-          type="number"
-          placeholder="Room price"
-          required
-        />
-      </div>
-
-      <div>
         <label htmlFor="description" className="block mb-1 font-medium">
           Description
         </label>
@@ -42,33 +29,45 @@ const AddNewRoomForm = ({
           required
         />
       </div>
+      <div className="flex gap-4 items-center">
+        <div>
+          <label htmlFor="price" className="block mb-1 font-medium">
+            Price
+          </label>
+          <Input
+            id="price"
+            name="price"
+            type="number"
+            placeholder="Room price"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="familyCount" className="block mb-1 font-medium">
+            Family Count
+          </label>
+          <Input
+            id="familyCount"
+            name="familyCount"
+            type="number"
+            placeholder="Number of families"
+            required
+          />
+        </div>
 
-      <div>
-        <label htmlFor="familyCount" className="block mb-1 font-medium">
-          Family Count
-        </label>
-        <Input
-          id="familyCount"
-          name="familyCount"
-          type="number"
-          placeholder="Number of families"
-          required
-        />
+        <div>
+          <label htmlFor="roomsCount" className="block mb-1 font-medium">
+            Rooms Count
+          </label>
+          <Input
+            id="roomsCount"
+            name="roomsCount"
+            type="number"
+            placeholder="Number of rooms"
+            required
+          />
+        </div>
       </div>
-
-      <div>
-        <label htmlFor="roomsCount" className="block mb-1 font-medium">
-          Rooms Count
-        </label>
-        <Input
-          id="roomsCount"
-          name="roomsCount"
-          type="number"
-          placeholder="Number of rooms"
-          required
-        />
-      </div>
-
       <div>
         <label htmlFor="main_image" className="block mb-1 font-medium">
           Main Image

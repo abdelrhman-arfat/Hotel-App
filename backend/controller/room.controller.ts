@@ -128,6 +128,7 @@ const getAllRooms = async (req: Request, res: Response) => {
         room_images: {
           select: {
             image: true,
+            id: true,
           },
         },
       },
@@ -326,7 +327,9 @@ const updateRoomImage = async (req: Request, res: Response) => {
   });
 
   if (!updateImage) {
-    return res.status(404).json(responseFailedHandler(404, "image not found"));
+    return res
+      .status(404)
+      .json(responseFailedHandler(404, "Can't update the image"));
   }
 
   res.status(200).json(

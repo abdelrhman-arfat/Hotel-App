@@ -12,13 +12,6 @@ const AddNewRoom = ({ refetch }: { refetch: () => void }) => {
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const form = new FormData(e.currentTarget);
-      // const title = form.get("title");
-      // const description = form.get("description");
-      // const price = form.get("price");
-      // const familyCount = form.get("familyCount");
-      // const roomsCount = form.get("roomsCount");
-      // const main_image = form.get("main_image") as File;
-      // const images = form.getAll("images") as File[];
       toast
         .promise(
           axiosInstance.post(`/room`, form, {

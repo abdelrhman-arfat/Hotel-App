@@ -32,7 +32,12 @@ const SettingCard = ({
               <p className="text-sm text-muted-foreground">{description}</p>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={onClick}>
+          <Button
+            className="cursor-pointer"
+            variant="outline"
+            size="sm"
+            onClick={onClick}
+          >
             {buttonText}
           </Button>
         </div>
