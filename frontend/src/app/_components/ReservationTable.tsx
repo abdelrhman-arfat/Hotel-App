@@ -97,14 +97,16 @@ const ReservationTable = ({
                   <TableCell className="text-center">
                     <Badge
                       className={`${
-                        reservation.is_active && new Date(reservation.start_date) >= new Date()
+                        reservation.is_active &&
+                        new Date(reservation.start_date).getDay() ===
+                          new Date().getDay()
                           ? "bg-green-500 text-white"
                           : new Date(reservation.start_date) < new Date()
-                          ? "bg-red-500 text-white"
-                          : "bg-yellow-500 text-white"
+                            ? "bg-red-500 text-white"
+                            : new Date(reservation.start_date) > new Date() &&
+                              "bg-yellow-500 text-white"
                       } h-[16px] w-[16px] rounded-full`}
-                    >
-                    </Badge>
+                    ></Badge>
                   </TableCell>
                 </TableRow>
               ))

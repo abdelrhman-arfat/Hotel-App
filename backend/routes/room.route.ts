@@ -10,6 +10,7 @@ import {
   updateRoom,
   updateRoomImage,
   deleteRoom,
+  availableReservations,
 } from "../controller/room.controller.js";
 import { body } from "express-validator";
 import { upload } from "../lib/config/Cloudinary.js";
@@ -27,6 +28,7 @@ const validateCreateRoom = [
 router
   .get("/", tryCatchHandler(getAllRooms))
   .get("/get-room/:roomId", tryCatchHandler(getRoomById))
+  .get("/get-available-date/:roomId", tryCatchHandler(availableReservations))
   .get("/featured", tryCatchHandler(getFeaturedRooms));
 
 router

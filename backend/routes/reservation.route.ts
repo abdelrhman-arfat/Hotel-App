@@ -16,11 +16,6 @@ import { handleValidationErrors } from "../utils/func/handleValidationErrors.js"
 
 const reservationValidation = [
   body("roomId").notEmpty().withMessage("Room ID is required"),
-  body("startDay")
-    .notEmpty()
-    .withMessage("Start day is required")
-    .isDate()
-    .withMessage("Start day must be a valid date"),
   body("totalDays")
     .notEmpty()
     .withMessage("Total days is required")

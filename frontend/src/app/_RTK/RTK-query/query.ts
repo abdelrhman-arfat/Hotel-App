@@ -17,6 +17,11 @@ type TRoomQuery = {
   maxPrice?: number;
 };
 
+type TAvailableDate = {
+  month: string;
+  ranges: [{ start: string; end: string }];
+};
+
 type TEmpty = { s?: string } | undefined | void;
 
 export const api = createApi({
@@ -49,6 +54,13 @@ export const api = createApi({
     getMyReservations: b.query<TResponse<TReservation[]>, void>({
       query: () => `/reservation/me`,
     }),
+    getAvailableReservationDates: b.query<
+      TResponse<TAvailableDate[]>,
+      { roomId: number }
+    >({
+      query: ({ roomId }) => `/room/get-available-date/${roomId}`,
+    }),
+
     getAllReservations: b.query<
       TResponse<TReservation[]>,
       { limit: string; isActive: string; page?: number }
@@ -67,5 +79,6 @@ export const {
   useGetManagerAnalyticsQuery,
   useGetAllUsersQuery,
   useGetMyReservationsQuery,
+  useGetAvailableReservationDatesQuery,
   useGetAllReservationsQuery,
 } = api;

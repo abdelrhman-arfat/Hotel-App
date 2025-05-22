@@ -71,7 +71,7 @@ const createReservation = async (req: Request, res: Response) => {
     data: {
       is_active: startDate >= new Date(),
       days_count: +totalDays,
-      user_id: user.id,
+      user_id: user?.id || 1,
       room_id: roomId,
       start_date: new Date(startDay),
       total_price: +room.price_per_day * +totalDays,
@@ -81,13 +81,13 @@ const createReservation = async (req: Request, res: Response) => {
     },
   });
   const [header, body, footer] = ReservationMessage(
-    user.fullname,
-    reservation.id,
-    user.id,
-    room.id,
-    room.title,
+    user?.fullname,
+    reservation?.id,
+    user?.id,
+    room?.id,
+    room?.title,
     totalDays,
-    +room.price_per_day,
+    +room?.price_per_day,
     endDate,
     startDay
   );
