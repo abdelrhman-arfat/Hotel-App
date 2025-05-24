@@ -25,14 +25,14 @@ const googleCallback = async (req: Request, res: Response) => {
   }
   res.cookie("backendToken", user.bkToken, {
     httpOnly: true,
-    secure: NODE_ENV === "production",
+    secure:true,// NODE_ENV === "production"
     sameSite: SameSiteToken,
     maxAge: tokenExpire,
   });
 
   res.cookie("backendRefreshToken", user.bkRefreshToken, {
     httpOnly: true,
-    secure: NODE_ENV === "production",
+    secure:true,
     sameSite: SameSiteToken,
     maxAge: refreshTokenExpire,
   });
@@ -87,7 +87,7 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
 
   res.cookie("backendToken", token, {
     httpOnly: true,
-    secure: NODE_ENV === "production",
+    secure:true,
     sameSite: SameSiteToken,
     maxAge: tokenExpire,
   });
