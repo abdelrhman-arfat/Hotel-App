@@ -4,6 +4,7 @@ import responseSuccessfulHandler from "../utils/types/response/responseSuccessfu
 import returnSkip from "../utils/func/ReturnSkip.js";
 import { deleteExistImage } from "../lib/config/Cloudinary.js";
 import { PrismaClient } from "@prisma/client";
+import type { Multer } from "multer"; // <-- Add this import
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ const prisma = new PrismaClient();
 const createRoom = async (req: Request, res: Response) => {
   const { price, title, familyCount, description, roomsCount } = req.body;
 
-  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  const files = req.files as any;
 
   const mainImage = files?.main_image?.[0];
 
