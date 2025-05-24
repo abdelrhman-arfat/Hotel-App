@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 const roboto = Roboto({
   variable: "--font-roboto",
   weight: ["300", "400", "500", "600"],
+  subsets: ["latin"], // Added subset to fix preload error
 });
 
 export const metadata: Metadata = {

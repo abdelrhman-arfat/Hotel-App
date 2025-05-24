@@ -1,22 +1,20 @@
-import AppLoader from "@/app/_components/AppLoader";
-import RoomHeroCard from "@/app/_components/card/RoomHeroCard";
+// app/rooms/[id]/page.tsx
 import React from "react";
-import { Suspense } from "react";
-interface Props {
-  params: {
+import RoomHeroCard from "@/app/_components/card/RoomHeroCard";
+
+interface PageProps {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-const Page = async ({ params }: Props) => {
-  const { id } = params;
-  if (!id) throw new Error("No id provided");
-
+const Page = async ({ params }: PageProps) => {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+  
   return (
     <div>
-      <Suspense fallback={<AppLoader />}>
-        <RoomHeroCard id={id} />
-      </Suspense>
+      <RoomHeroCard id={id} />
     </div>
   );
 };

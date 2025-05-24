@@ -8,6 +8,7 @@ import { ReservationMessage } from "../utils/email/reservationMessage.js";
 import returnSkip from "../utils/func/ReturnSkip.js";
 import { emailRegEx } from "../constants/ReqEx.js";
 import stripe from "../lib/config/Stripe.js";
+import { CLIENT_URL } from "../constants/Env.js";
 
 const prisma = new PrismaClient();
 
@@ -73,8 +74,8 @@ const createStripeSession = async (req: Request, res: Response) => {
       },
     ],
     mode: "payment",
-    success_url: `${process.env.CLIENT_URL}/reservation/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.CLIENT_URL}/reservation/cancel`,
+    success_url: `${CLIENT_URL}/reservation/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${CLIENT_URL}/reservation/cancel`,
     customer_email: user.email,
     metadata: {
       roomId: roomId.toString(),

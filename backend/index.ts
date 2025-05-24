@@ -18,7 +18,7 @@ const allowedOrigins = CLIENT_URL || "http://localhost:3000";
 
 // Automation ot update the reservation activation status
 // minutes hours day month dayOfWeek
-cron.schedule("41 3 * * *", () => {
+cron.schedule("30 8 * * *", () => {
   console.log("running a task every day at 3:18am");
   checkAndUpdateReservations();
 });
