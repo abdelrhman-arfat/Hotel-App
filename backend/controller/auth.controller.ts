@@ -6,14 +6,7 @@ import responseSuccessfulHandler from "../utils/types/response/responseSuccessfu
 
 import { PrismaClient } from "@prisma/client";
 
-import { sendEmail } from "../utils/func/sendEmail.js";
-
-import { returnMessageDesign } from "../utils/func/ReturnMessageDesign.js";
-import {
-  createRefreshToken,
-  createToken,
-  verifyToken,
-} from "../utils/func/JwtTokens.js";
+import { createToken, verifyToken } from "../utils/func/JwtTokens.js";
 import { CLIENT_URL, NODE_ENV, REFRESH_SECRET } from "../constants/Env.js";
 import {
   refreshTokenExpire,
@@ -23,79 +16,6 @@ import {
 import { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
-// first chick the token from the clint side
-const signInOrSignUp = async (req: Request, res: Response) => {
-  const { email, fullName, image } = req.body;
-  const userExist = await prisma.user.findUnique({
-    where: { email },
-  });
-  if (!userExist) {
-    const user = await prisma.user.create({
-      data: {
-        email,
-        full_name: fullName,
-        image,
-        role: "customer",
-      },
-    });
-
-    const token = createToken(user.id);
-    const refreshToken = createRefreshToken(user.id);
-
-    res.cookie("backendToken", token, {
-      httpOnly: true,
-      secure: NODE_ENV === "production",
-      sameSite: SameSiteToken,
-      maxAge: tokenExpire,
-    });
-
-    res.cookie("backendRefreshToken", refreshToken, {
-      httpOnly: true,
-      secure: NODE_ENV === "production",
-      sameSite: SameSiteToken,
-      maxAge: refreshTokenExpire,
-    });
-
-    await sendEmail(
-      user,
-      returnMessageDesign(
-        `Hello in our Hotel ${user.full_name}`,
-        `Welcome in our service and we will happy to have you in our hotel`,
-        "we wish you have nice time"
-      ),
-      "Hello in hotel project"
-    );
-
-    return res.status(200).json(
-      responseSuccessfulHandler(" sign up success ", 200, {
-        data: {
-          id: user.id,
-          role: user.role,
-        },
-      })
-    );
-  }
-  const token = createToken(userExist.id);
-  const refreshToken = createRefreshToken(userExist.id);
-
-  res.cookie("backendToken", token, {
-    httpOnly: true,
-    secure: NODE_ENV === "production",
-    sameSite: SameSiteToken,
-    maxAge: tokenExpire,
-  });
-
-  res.cookie("backendRefreshToken", refreshToken, {
-    httpOnly: true,
-    secure: NODE_ENV === "production",
-    sameSite: SameSiteToken,
-    maxAge: refreshTokenExpire,
-  });
-
-  return res
-    .status(200)
-    .json(responseSuccessfulHandler(" sign up success ", 200, null));
-};
 
 const googleCallback = async (req: Request, res: Response) => {
   const user = req.user;
@@ -205,7 +125,6 @@ const getMyDate = async (req: Request, res: Response) => {
 };
 export {
   getMyDate,
-  signInOrSignUp,
   logout,
   deleteUserById,
   refreshTokenUpdate,

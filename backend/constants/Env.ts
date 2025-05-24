@@ -26,7 +26,7 @@ const CLIENT_SCREE_JWT = process.env.CLIENT_SCREE_JWT;
 
 const SECRET = process.env.SECRET;
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 const GOOGLE_AUTH_ID = process.env.GOOGLE_AUTH_ID;
 const GOOGLE_AUTH_SECRET = process.env.GOOGLE_AUTH_SECRET;
