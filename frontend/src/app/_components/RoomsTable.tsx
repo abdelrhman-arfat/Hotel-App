@@ -89,10 +89,7 @@ const RoomsTable = ({ rooms, refetch, deleteFunc }: RoomsTableProps) => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant={room.room_count > 0 ? "default" : "secondary"}
-                        className="font-normal"
-                      >
+                      <Badge variant="outline" className="font-normal">
                         {room.room_count}{" "}
                         {room.room_count === 1 ? "Room" : "Rooms"}
                       </Badge>
