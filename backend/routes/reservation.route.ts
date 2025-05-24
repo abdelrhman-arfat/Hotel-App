@@ -3,6 +3,7 @@ import { authMiddleware } from "../middleware/auth.middleware.js";
 import tryCatchHandler from "../utils/func/tryCatchHandler.js";
 import {
   createReservation,
+  createStripeSession,
   getMyReservations,
   getReservationById,
   getReservationByReservationEmailId,
@@ -29,9 +30,14 @@ router.use(tryCatchHandler(authMiddleware));
 
 router
   .post(
-    "/",
+    "/create-stripe-session",
     reservationValidation,
     tryCatchHandler(handleValidationErrors),
+    tryCatchHandler(createStripeSession)
+  )
+  .post(
+    "/",
+
     tryCatchHandler(createReservation)
   )
   .get("/me", tryCatchHandler(getMyReservations));

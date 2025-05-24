@@ -1,7 +1,8 @@
 "use client";
 import axiosInstance from "@/lib/API/axiosInstance";
 import { X } from "lucide-react";
-import React, { useCallback, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useState, useMemo, FormEvent } from "react";
 import toast from "react-hot-toast";
 
 type BookingFormProps = {
@@ -20,39 +21,52 @@ const BookingForm = ({
   const [startDate, setStartDate] = useState<Date>(initialStartDate);
   const [daysCount, setDaysCount] = useState<number>(1);
 
+  const router = useRouter();
+
   const endDateISO = endDate.toISOString().split("T")[0];
   const startDateISO = startDate.toISOString().split("T")[0];
 
-  const totalDays = useMemo(() => {
+  const MaxDays = useMemo(() => {
     const diffDays = Math.floor(
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     return Math.max(1, diffDays + 1);
   }, [startDate, endDate]);
 
-  const handleBooking = useCallback(() => {
-    toast
-      .promise(
-        axiosInstance.post(`/reservation`, {
-          roomId,
-          startDay: startDate,
-          totalDays: totalDays,
-        }),
-        {
-          loading: "Booking...",
-          success: (res) => res.data.message || "Booking successful!",
-          error: (error) => error.response?.data?.message || "Booking failed!",
-        }
-      )
-      .then(() => {
-        setIsOpen(false);
-      });
-  }, [startDate, totalDays, roomId, setIsOpen]);
+  const handleBooking = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const dayCount = Number(formData.get("daysCount"));
 
-  // Clamp daysCount to totalDays to prevent invalid input
+      toast
+        .promise(
+          axiosInstance.post(`/reservation/create-stripe-session`, {
+            roomId,
+            startDay: startDate,
+            totalDays: dayCount,
+          }),
+          {
+            loading: "Booking...",
+            success: (res) => {
+              return res.data.message || "session Created successfully";
+            },
+            error: (error) =>
+              error.response?.data?.message || "Booking failed!",
+          }
+        )
+        .then((res) => {
+          router.push(res.data.data.data.url);
+          setIsOpen(false);
+        });
+    },
+    [roomId, startDate, router, setIsOpen]
+  );
+
+  // Clamp daysCount to MaxDays to prevent invalid input
   const handleDaysCountChange = (value: number) => {
     if (value < 1) return setDaysCount(1);
-    if (value > totalDays) return setDaysCount(totalDays);
+    if (value > MaxDays) return setDaysCount(MaxDays);
     setDaysCount(value);
   };
 
@@ -64,10 +78,7 @@ const BookingForm = ({
       aria-labelledby="bookingFormTitle"
     >
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleBooking();
-        }}
+        onSubmit={handleBooking}
         className="relative space-y-6 p-6 bg-white border rounded-lg shadow-lg w-full max-w-md"
       >
         {/* Close Button */}
@@ -125,13 +136,13 @@ const BookingForm = ({
             name="daysCount"
             type="number"
             min={1}
-            max={totalDays}
+            max={MaxDays}
             value={daysCount}
             onChange={(e) => handleDaysCountChange(Number(e.target.value))}
             className="border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <p className="text-xs text-gray-500">
-            Max: {totalDays} day{totalDays > 1 ? "s" : ""}
+            Max: {MaxDays} day{MaxDays > 1 ? "s" : ""}
           </p>
         </div>
 

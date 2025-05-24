@@ -2,8 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 const DATABASE_URL = process.env.DATABASE_URL;
 
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-
 const CLIENT_URL = process.env.CLIENT_URL;
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -34,6 +32,10 @@ const GOOGLE_AUTH_SECRET = process.env.GOOGLE_AUTH_SECRET;
 const GOOGLE_AUTH_SERVER_CALLBACK = process.env.GOOGLE_AUTH_SERVER_CALLBACK;
 const GOOGLE_AUTH_URL_SUCCESS = process.env.GOOGLE_AUTH_URL_SUCCESS;
 
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+const STRIPE_PUBLISHABLE_KEY = process.env.STRIPE_PUBLISHABLE_KEY;
+
 export {
   DATABASE_URL,
   STRIPE_SECRET_KEY,
@@ -57,4 +59,5 @@ export {
   GOOGLE_AUTH_SECRET,
   GOOGLE_AUTH_SERVER_CALLBACK,
   GOOGLE_AUTH_URL_SUCCESS,
+  STRIPE_PUBLISHABLE_KEY,
 };

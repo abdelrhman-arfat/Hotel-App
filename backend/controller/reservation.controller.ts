@@ -7,23 +7,11 @@ import { returnMessageDesign } from "../utils/func/ReturnMessageDesign.js";
 import { ReservationMessage } from "../utils/email/reservationMessage.js";
 import returnSkip from "../utils/func/ReturnSkip.js";
 import { emailRegEx } from "../constants/ReqEx.js";
+import stripe from "../lib/config/Stripe.js";
 
 const prisma = new PrismaClient();
 
-const createReservation = async (req: Request, res: Response) => {
-  /*
-  first check the payment functionality or not
-    const payment = await paymentService.payment(req.body);
-    if !payment will return can't create this service or can't continue else i will continue
-
-  if (payment) {
-    res
-      .status(400)
-      .json(responseFailedHandler(400, "payment failed try again later"));
-    return;
-  }
-  */
-
+const createStripeSession = async (req: Request, res: Response) => {
   const user = req.user;
   const { roomId, startDay, totalDays } = req.body;
   const startDate = new Date(startDay);
@@ -67,38 +55,104 @@ const createReservation = async (req: Request, res: Response) => {
     return;
   }
 
+  const totalAmount = +room.price_per_day * totalDays;
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: room.title,
+            description: `${totalDays} days stay from ${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
+          },
+          unit_amount: Math.round(totalAmount * 100), // Convert to cents
+        },
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: `${process.env.CLIENT_URL}/reservation/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.CLIENT_URL}/reservation/cancel`,
+    customer_email: user.email,
+    metadata: {
+      roomId: roomId.toString(),
+      userId: user.id.toString(),
+      endDate: endDate.toLocaleDateString(),
+      startDay: startDay,
+      totalDays: totalDays.toString(),
+    },
+  });
+
+  res.status(200).json(
+    responseSuccessfulHandler("Session Created ", 201, {
+      data: {
+        url: session.url,
+        sessionId: session.id,
+      },
+    })
+  );
+};
+
+const createReservation = async (req: Request, res: Response) => {
+  const { session_id } = req.query;
+  const user = req.user;
+
+  const session = await stripe.checkout.sessions.retrieve(session_id as string);
+
+  if (!session || session.payment_status !== "paid") {
+    return res
+      .status(400)
+      .json(responseFailedHandler(400, "Payment not completed"));
+  }
+
+  const { roomId, startDay, endDate, totalDays } = session.metadata as {
+    roomId: string;
+    startDay: string;
+    totalDays: string;
+    endDate: string;
+  };
+  const startDate = new Date(startDay);
+
+  const room = await prisma.room.findUnique({
+    where: { id: parseInt(roomId) },
+  });
+  if (!room)
+    return res.status(404).json(responseFailedHandler(404, "Room not found"));
+
   const reservation = await prisma.reservation.create({
     data: {
       is_active: startDate >= new Date(),
       days_count: +totalDays,
-      user_id: user?.id || 1,
-      room_id: roomId,
-      start_date: new Date(startDay),
+      user_id: user.id,
+      room_id: parseInt(roomId),
+      start_date: new Date(startDate),
+      end_date: new Date(endDate),
       total_price: +room.price_per_day * +totalDays,
-      end_date: new Date(
-        new Date(startDay).getTime() + totalDays * 24 * 60 * 60 * 1000
-      ),
     },
   });
+
   const [header, body, footer] = ReservationMessage(
     user?.fullname,
-    reservation?.id,
+    reservation.id,
     user?.id,
-    room?.id,
-    room?.title,
-    totalDays,
-    +room?.price_per_day,
-    endDate,
-    startDay
+    room.id,
+    room.title,
+    +totalDays,
+    +room.price_per_day,
+    new Date(startDate),
+    new Date(endDate)
   );
+
   await sendEmail(
     user,
     returnMessageDesign(header, body, footer),
-    "reservation created"
+    "Reservation Created"
   );
 
-  res.status(201).json(
-    responseSuccessfulHandler("reservation created successfully", 201, {
+  return res.status(201).json(
+    responseSuccessfulHandler("Reservation created successfully", 201, {
       data: reservation,
     })
   );
@@ -213,7 +267,6 @@ const getReservationByReservationEmailId = async (
   }
   //{roomId}-${userId}-${reservationId}-${ endDay } -> '1-1-1'-2025-2-4
   const [roomId, userId, resId] = reservationId?.split("-");
-  console.log(roomId, userId, resId);
   const failedMessage = "this id isn't true please add true id and try again";
   if (!roomId || !userId || !resId) {
     res.status(404).json(responseFailedHandler(404, failedMessage));
@@ -465,4 +518,5 @@ export {
   getReservationsByRoom,
   getReservationsBuyIsActive,
   getReservationByReservationEmailId,
+  createStripeSession,
 };

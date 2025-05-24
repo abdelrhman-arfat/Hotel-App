@@ -10,17 +10,25 @@ import { managerRouter } from "./routes/manager.route.js";
 import { reviewRouter } from "./routes/review.route.js";
 import { CLIENT_URL, PORT } from "./constants/Env.js";
 import responseFailedHandler from "./utils/types/response/responseFailedHandler.js";
-
 import "./lib/config/passport.js";
-
+import cron from "node-cron";
+import checkAndUpdateReservations from "./utils/func/UpdateReservationActivation.js";
 export const app = express();
+const allowedOrigins = CLIENT_URL || "http://localhost:3000";
+
+// Automation ot update the reservation activation status
+// minutes hours day month dayOfWeek
+cron.schedule("41 3 * * *", () => {
+  console.log("running a task every day at 3:18am");
+  checkAndUpdateReservations();
+});
 
 app.use(helmet());
 app.use(passport.initialize());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-const allowedOrigins = CLIENT_URL || "http://localhost:3000";
+
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/room", roomRouter);
