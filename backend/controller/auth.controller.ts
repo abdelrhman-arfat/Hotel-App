@@ -7,14 +7,19 @@ import responseSuccessfulHandler from "../utils/types/response/responseSuccessfu
 import { PrismaClient } from "@prisma/client";
 
 import { createToken, verifyToken } from "../utils/func/JwtTokens.js";
-import { CLIENT_URL, NODE_ENV, REFRESH_SECRET } from "../constants/Env.js";
+import { CLIENT_URL, REFRESH_SECRET } from "../constants/Env.js";
 import {
   refreshTokenExpire,
   SameSiteToken,
   tokenExpire,
 } from "../constants/TokenCookiesSetting.js";
 import { JwtPayload } from "jsonwebtoken";
-
+const clearCookieTokens = {
+  secure: true,
+  httpOnly: true,
+  sameSite: SameSiteToken,
+  maxAge: 0,
+};
 const prisma = new PrismaClient();
 
 const googleCallback = async (req: Request, res: Response) => {
@@ -25,14 +30,14 @@ const googleCallback = async (req: Request, res: Response) => {
   }
   res.cookie("backendToken", user.bkToken, {
     httpOnly: true,
-    secure:true,// NODE_ENV === "production"
+    secure: true, // NODE_ENV === "production"
     sameSite: SameSiteToken,
     maxAge: tokenExpire,
   });
 
   res.cookie("backendRefreshToken", user.bkRefreshToken, {
     httpOnly: true,
-    secure:true,
+    secure: true,
     sameSite: SameSiteToken,
     maxAge: refreshTokenExpire,
   });
@@ -65,8 +70,8 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.backendRefreshToken;
 
   if (!refreshToken) {
-    res.clearCookie("backendToken");
-    res.clearCookie("backendRefreshToken");
+    res.clearCookie("backendToken", clearCookieTokens);
+    res.clearCookie("backendRefreshToken", clearCookieTokens);
     res.status(401).json(responseFailedHandler(401, "unauthorized"));
     return;
   }
@@ -77,8 +82,8 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
 
   const decoded = verifyToken(refreshToken, REFRESH_SECRET) as JwtPayload;
   if (!decoded || user.id !== decoded.id) {
-    res.clearCookie("backendToken");
-    res.clearCookie("backendRefreshToken");
+    res.clearCookie("backendToken", clearCookieTokens);
+    res.clearCookie("backendRefreshToken", clearCookieTokens);
     res.status(401).json(responseFailedHandler(401, "unauthorized"));
     return;
   }
@@ -87,7 +92,7 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
 
   res.cookie("backendToken", token, {
     httpOnly: true,
-    secure:true,
+    secure: true,
     sameSite: SameSiteToken,
     maxAge: tokenExpire,
   });
@@ -99,8 +104,8 @@ const refreshTokenUpdate = async (req: Request, res: Response) => {
 };
 
 const logout = async (req: Request, res: Response) => {
-  res.clearCookie("backendToken");
-  res.clearCookie("backendRefreshToken");
+  res.clearCookie("backendToken", clearCookieTokens);
+  res.clearCookie("backendRefreshToken", clearCookieTokens);
   res.status(200).json(responseSuccessfulHandler("logout success", 200, null));
 };
 

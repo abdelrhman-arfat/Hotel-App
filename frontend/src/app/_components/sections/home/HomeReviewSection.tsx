@@ -13,7 +13,7 @@ const HomeReviewSection = () => {
 
   return (
     <section className="py-10  bg-gray-50">
-      {Array.isArray(data?.data?.data) && data.data.data.length && (
+      {Array.isArray(data?.data?.data) && data.data.data.length > 0 && (
         <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">
           💬 What Our Guests Say
         </h2>
