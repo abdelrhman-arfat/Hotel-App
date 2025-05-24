@@ -11,9 +11,7 @@ const prisma = new PrismaClient();
 const createRoom = async (req: Request, res: Response) => {
   const { price, title, familyCount, description, roomsCount } = req.body;
 
-  const files = req.files as {
-    [fieldname: string]: Express.Multer.File[];
-  };
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
   const mainImage = files?.main_image?.[0];
 
