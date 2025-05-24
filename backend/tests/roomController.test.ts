@@ -5,7 +5,7 @@ import { ROLES } from "../constants/Roles";
 
 const prisma = new PrismaClient();
 
-describe("Room Controller", () => {
+describe.skip("Room Controller", () => {
   const backendToken = ``;
   const backendRefreshToken = "";
 

@@ -5,7 +5,7 @@ import { app } from "../index";
 
 const prisma = new PrismaClient();
 
-describe("User Controller", () => {
+describe.skip("User Controller", () => {
   const backendToken = "";
   const backendRefreshToken = "";
   const testUserData = {

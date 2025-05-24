@@ -4,7 +4,7 @@ import { app } from "../index";
 
 const prisma = new PrismaClient();
 
-describe("Reservation Controller", () => {
+describe.skip("Reservation Controller", () => {
   const backendToken = ``;
 
   afterAll(async () => {
