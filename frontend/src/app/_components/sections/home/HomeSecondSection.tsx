@@ -12,7 +12,7 @@ import Link from "next/link";
 const HomeSecondSection = () => {
   const { data, isLoading } = useGetFeaturedRoomsQuery();
   return (
-    <section className="py-20 ">
+    <section id="featured" className="py-20 ">
       <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
         🌟 Featured Rooms
       </h2>
