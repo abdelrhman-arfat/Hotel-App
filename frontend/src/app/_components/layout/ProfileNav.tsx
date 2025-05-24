@@ -46,7 +46,7 @@ const ProfileNav = ({ children }: { children: ReactNode }) => {
       href: "/profile/dashboard",
       label: "Dashboard",
       icon: <LayoutDashboard className="w-4 h-4" />,
-      available: [ROLES.MANAGER, ROLES.EMPLOYEE],
+      available: [ROLES.MANAGER],
     },
     {
       href: "/profile/users",
