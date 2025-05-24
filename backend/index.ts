@@ -44,6 +44,6 @@ app.use((_, res) => {
   return;
 });
 
-app.listen(PORT || 3002, () => {
-  console.log(`server is running in port ${PORT || 3002}`);
+app.listen(PORT, () => {
+  console.log(`server is running in port ${PORT}`);
 });
