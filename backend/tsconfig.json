@@ -3,7 +3,10 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Node",
-    "types": ["jest", "node"],
+    "types": [
+      "node"
+      // "jest"
+    ],
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
