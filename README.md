@@ -1,4 +1,4 @@
-# ‼️ The Project is closed becuase the database time was ended
+# ‼️ The Project closed becuase the database time was ended
 
 # 🏨 Hotel Management System (Fullstack MERN Project)
 
