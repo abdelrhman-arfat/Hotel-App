@@ -1,3 +1,5 @@
+###‼️ The Api may take some time to work becuase i deploye it in render and it freeze when no requests for some time
+
 # 🏨 Hotel Management System (Fullstack MERN Project)
 
 ## 📋 Project Description:
