@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronDown, ChevronUp, CalendarDays } from "lucide-react";
 import { useGetAvailableReservationDatesQuery } from "../_RTK/RTK-query/query";
 import BookingForm from "./forms/BookingForm";
+import SkeletonValidDate from "./card/SkeletonValidDate";
 
 const ValidDate = ({ id }: { id: number }) => {
   const { data, isLoading } = useGetAvailableReservationDatesQuery({
@@ -22,7 +23,7 @@ const ValidDate = ({ id }: { id: number }) => {
   const [openMonths, setOpenMonths] = useState<Record<string, boolean>>({});
 
   const [isFromOpen, setIsFromOpen] = useState<boolean>(false);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <SkeletonValidDate />;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
